@@ -80,7 +80,7 @@ int main(int argc, char *argv[])
 		std::cerr<<"Choosing device "<<selectedDevice<<"\n";
 		cl::Device device=devices.at(selectedDevice);
 		
-		cl::Context context(device);
+		cl::Context context(devices);
 
 		std::string kernelSource="__kernel void Add(__global float *x){ x[get_global_id(0)] += 0.125f; }\n";
 		
