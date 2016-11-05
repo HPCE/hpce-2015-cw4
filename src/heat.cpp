@@ -7,6 +7,11 @@
 #include <cstdio>
 #include <string>
 
+#if defined(WIN32) || defined(_WIN32)
+#include <io.h>
+#include <fcntl.h>
+#endif
+
 namespace hpce{
 	
 //! Create a square world with a standardised "slalom track"
@@ -273,6 +278,11 @@ void RenderWorld(const std::string &fileName, const world_t &world)
 		dst=fopen(fileName.c_str(), "wb");
 		if(dst==0)
 			throw std::runtime_error("RenderWorld : Couldn't open destination file.");
+	}else{
+#if defined(WIN32) || defined(_WIN32)
+		setmode(fileno(stdin), O_BINARY);
+		setmode(fileno(stdout), O_BINARY);
+#endif
 	}
 	try{
 		if(sizeof(file)!=fwrite(file, 1, sizeof(file), dst))
