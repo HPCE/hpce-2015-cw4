@@ -1,3 +1,9 @@
+#if defined(WIN32) || defined(_WIN32)
+#define _POSIX_SOURCE
+#include <io.h>
+#include <fcntl.h>
+#endif
+
 #include "heat.hpp"
 
 #include <stdexcept>
@@ -6,11 +12,6 @@
 #include <memory>
 #include <cstdio>
 #include <string>
-
-#if defined(WIN32) || defined(_WIN32)
-#include <io.h>
-#include <fcntl.h>
-#endif
 
 namespace hpce{
 	
@@ -75,6 +76,10 @@ world_t MakeTestWorld(unsigned n, float alpha)
 //! Save the give world to a file
 void SaveWorld(std::ostream &dst, const world_t &world, bool binary)
 {	
+#if defined(WIN32) || defined(_WIN32)
+	setmode(fileno(stdin), O_BINARY);
+	setmode(fileno(stdout), O_BINARY);
+#endif
 	if(binary){
 		dst<<"HPCEHeatWorldV0Binary"<<std::endl;
 	}else{
@@ -133,6 +138,10 @@ world_t LoadWorld(std::istream &src)
 {
 	bool binary=false;
 	
+#if defined(WIN32) || defined(_WIN32)
+	setmode(fileno(stdin), O_BINARY);
+	setmode(fileno(stdout), O_BINARY);
+#endif
 	std::string header;
 	src>>header;
 	if(header=="HPCEHeatWorldV0"){
